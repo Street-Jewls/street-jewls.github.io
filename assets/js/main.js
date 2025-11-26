@@ -280,19 +280,22 @@
    */
   const ProductFilter = {
     init: function () {
+      var self = this;
+
       this.filterBtns = document.querySelectorAll('.filter-btn');
       this.categoryLinks = document.querySelectorAll('[data-filter-link]');
       this.productsSection = document.getElementById('products');
+      this.items = document.querySelectorAll('[data-category]');
 
-      if (!this.filterBtns.length) {
+      // Exit if no products to filter
+      if (!this.items.length) {
         return;
       }
 
-      var self = this;
-
       // Bind filter button clicks
       this.filterBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
           self.applyFilter(this.dataset.filter, true);
         });
       });
@@ -301,6 +304,7 @@
       this.categoryLinks.forEach(function (link) {
         link.addEventListener('click', function (e) {
           e.preventDefault();
+          e.stopPropagation();
           var filter = this.dataset.filterLink;
           self.applyFilter(filter, true);
           self.scrollToProducts();
@@ -310,7 +314,7 @@
       // Check URL hash on page load
       this.checkHash();
 
-      // Listen for hash changes
+      // Listen for hash changes (e.g., browser back/forward)
       window.addEventListener('hashchange', function () {
         self.checkHash();
       });
@@ -325,8 +329,6 @@
     },
 
     applyFilter: function (filter, updateHash) {
-      var items = document.querySelectorAll('[data-category]');
-
       // Update active button
       this.filterBtns.forEach(function (btn) {
         var isActive = btn.dataset.filter === filter;
@@ -335,7 +337,7 @@
       });
 
       // Filter items
-      items.forEach(function (item) {
+      this.items.forEach(function (item) {
         var shouldShow = filter === 'all' || item.dataset.category === filter;
         item.style.display = shouldShow ? '' : 'none';
       });
