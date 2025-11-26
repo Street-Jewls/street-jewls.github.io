@@ -21,9 +21,6 @@ env:
   NODE_VERSION: '20'
 
 jobs:
-  # =============================================================================
-  # Lint, Build, Test
-  # =============================================================================
   ci:
     name: CI
     runs-on: ubuntu-latest
@@ -63,147 +60,68 @@ jobs:
           path: dist/
           retention-days: 7
 
-
-  test:
-    name: Test
+  preview:
+    name: Preview
     runs-on: ubuntu-latest
-    needs: build
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test
-
-  lighthouse:
-    name: Lighthouse Audit
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'pull_request'
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install serve
-        run: npm install -g serve
-
-      - name: Start server
-        run: serve -s dist -l 3000 &
-        
-      - name: Wait for server
-        run: sleep 5
-
-      - name: Run Lighthouse
-        uses: treosh/lighthouse-ci-action@v11
-        with:
-          urls: |
-            http://localhost:3000/
-            http://localhost:3000/pages/parts.html
-            http://localhost:3000/pages/contact.html
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-
-  # ===========================================================================
-  # CD - Deployments
-  # ===========================================================================
-
-  deploy-preview:
-    name: Deploy Preview
-    runs-on: ubuntu-latest
-    needs: [build, test]
+    needs: ci
     if: github.event_name == 'pull_request'
     environment:
       name: preview
       url: ${{ steps.deploy.outputs.deploy-url }}
     
     steps:
-      - name: Download build artifacts
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
 
-      - name: Deploy to Netlify Preview
+      - name: Deploy preview
         id: deploy
         uses: nwtgck/actions-netlify@v3
         with:
-          publish-dir: './dist'
+          publish-dir: dist
           production-deploy: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "PR #${{ github.event.number }} - ${{ github.event.pull_request.title }}"
+          deploy-message: 'PR #${{ github.event.number }}'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         continue-on-error: true
 
-  deploy-staging:
-    name: Deploy Staging
+  staging:
+    name: Staging
     runs-on: ubuntu-latest
-    needs: [build, test]
-    if: |
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
       name: staging
       url: ${{ steps.deploy.outputs.deploy-url }}
     
     steps:
-      - name: Download build artifacts
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
 
-      - name: Deploy to Netlify (Staging)
+      - name: Deploy staging
         id: deploy
         uses: nwtgck/actions-netlify@v3
         with:
-          publish-dir: './dist'
+          publish-dir: dist
           production-deploy: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Staging deploy from ${{ github.sha }}"
+          deploy-message: 'Staging: ${{ github.sha }}'
           alias: staging
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-      - name: Comment deployment URL
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.repos.createCommitComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              commit_sha: context.sha,
-              body: `🚀 Deployed to staging: ${{ steps.deploy.outputs.deploy-url }}`
-            })
-
-  deploy-production:
-    name: Deploy Production
+  production:
+    name: Production
     runs-on: ubuntu-latest
-    needs: [build, test]
+    needs: ci
     if: |
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
@@ -212,36 +130,20 @@ jobs:
       url: https://streetjewls.com
     
     steps:
-      - name: Download build artifacts
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
 
-      - name: Deploy to Netlify (Production)
+      - name: Deploy production
         id: deploy
         uses: nwtgck/actions-netlify@v3
         with:
-          publish-dir: './dist'
+          publish-dir: dist
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Production deploy ${{ github.ref_name }}"
+          deploy-message: 'Production: ${{ github.ref_name }}'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-
-      - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const tag = context.ref.replace('refs/tags/', '');
-            github.rest.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: tag,
-              name: `Release ${tag}`,
-              body: `## Deployment\n\n🚀 Deployed to production: ${{ steps.deploy.outputs.deploy-url }}\n\n## Changes\n\nSee commit history for details.`,
-              draft: false,
-              prerelease: false
-            })
