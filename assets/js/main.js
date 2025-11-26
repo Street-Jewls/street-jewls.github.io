@@ -281,7 +281,7 @@
   const ProductFilter = {
     init: function () {
       var self = this;
-      
+
       this.filterBtns = document.querySelectorAll('.filter-btn');
       this.categoryLinks = document.querySelectorAll('[data-filter-link]');
       this.productsSection = document.getElementById('products');
@@ -329,8 +329,6 @@
     },
 
     applyFilter: function (filter, updateHash) {
-      var self = this;
-      
       // Update active button
       this.filterBtns.forEach(function (btn) {
         var isActive = btn.dataset.filter === filter;
