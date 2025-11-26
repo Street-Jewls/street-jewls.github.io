@@ -75,15 +75,18 @@
           <button class="btn btn--secondary filter-btn" data-filter="engine" aria-pressed="false">Engine</button>
           <button class="btn btn--secondary filter-btn" data-filter="exhaust" aria-pressed="false">Exhaust</button>
           <button class="btn btn--secondary filter-btn" data-filter="drivetrain" aria-pressed="false">Drivetrain</button>
+          <button class="btn btn--secondary filter-btn" data-filter="aero" aria-pressed="false">Aero</button>
+          <button class="btn btn--secondary filter-btn" data-filter="wheels" aria-pressed="false">Wheels</button>
         </div>
       </div>
     </section>
 
     <!-- Products Grid -->
-    <section class="section bg-black">
+    <section class="section bg-black" id="products">
       <div class="container">
         <div class="product-grid" data-animate="fade-in-up">
           
+          <!-- Suspension -->
           <article class="product-card" data-category="suspension">
             <a href="/pages/products/tein-rx1.html">
               <div class="product-card__image">
@@ -132,21 +135,6 @@
             </a>
           </article>
 
-          <article class="product-card" data-category="drivetrain">
-            <a href="/pages/products/cusco-lsd.html">
-              <div class="product-card__image">
-                <div class="img-placeholder">Product Image</div>
-              </div>
-              <div class="product-card__content">
-                <span class="product-card__brand">CUSCO</span>
-                <h2 class="product-card__title">Type RS 1.5 Way LSD</h2>
-                <div class="product-card__price">
-                  <span class="product-card__price-current">$1,285.00</span>
-                </div>
-              </div>
-            </a>
-          </article>
-
           <article class="product-card" data-category="suspension">
             <a href="/pages/products/bc-racing-br.html">
               <div class="product-card__image">
@@ -162,6 +150,39 @@
             </a>
           </article>
 
+          <!-- Engine -->
+          <article class="product-card" data-category="engine">
+            <a href="/pages/products/hks-intake.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">HKS</span>
+                <h2 class="product-card__title">Racing Suction Intake - 86/BRZ</h2>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$485.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+          <article class="product-card" data-category="engine">
+            <a href="/pages/products/tomei-header.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+                <span class="product-card__badge product-card__badge--new">New</span>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">TOMEI</span>
+                <h2 class="product-card__title">Expreme Equal Length Header - FA20</h2>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$895.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+          <!-- Exhaust -->
           <article class="product-card" data-category="exhaust">
             <a href="/pages/products/tomei-ti.html">
               <div class="product-card__image">
@@ -172,6 +193,130 @@
                 <h2 class="product-card__title">Expreme Ti Exhaust - 86/BRZ</h2>
                 <div class="product-card__price">
                   <span class="product-card__price-current">$1,450.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+          <article class="product-card" data-category="exhaust">
+            <a href="/pages/products/hks-hi-power.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">HKS</span>
+                <h2 class="product-card__title">Hi-Power Spec-L Exhaust</h2>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$1,195.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+          <!-- Drivetrain -->
+          <article class="product-card" data-category="drivetrain">
+            <a href="/pages/products/cusco-lsd.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">CUSCO</span>
+                <h2 class="product-card__title">Type RS 1.5 Way LSD</h2>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$1,285.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+          <article class="product-card" data-category="drivetrain">
+            <a href="/pages/products/act-clutch.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">ACT</span>
+                <h2 class="product-card__title">HD Clutch Kit - 86/BRZ</h2>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$695.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+          <!-- Aero -->
+          <article class="product-card" data-category="aero">
+            <a href="/pages/products/voltex-wing.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">VOLTEX</span>
+                <h2 class="product-card__title">Type 7 Swan Neck GT Wing</h2>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$2,850.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+          <article class="product-card" data-category="aero">
+            <a href="/pages/products/seibon-hood.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">SEIBON</span>
+                <h2 class="product-card__title">TS-Style Carbon Hood - 86/BRZ</h2>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$1,195.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+          <!-- Wheels -->
+          <article class="product-card" data-category="wheels">
+            <a href="/pages/products/rays-te37.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">RAYS</span>
+                <h2 class="product-card__title">Volk TE37 Saga 18x9.5 +38</h2>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$3,200.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+          <article class="product-card" data-category="wheels">
+            <a href="/pages/products/enkei-rpf1.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">ENKEI</span>
+                <h2 class="product-card__title">RPF1 17x9 +35 - Matte Black</h2>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$1,450.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+          <article class="product-card" data-category="wheels">
+            <a href="/pages/products/work-meister.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+                <span class="product-card__badge product-card__badge--new">New</span>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">WORK</span>
+                <h2 class="product-card__title">Meister S1 3P 18x10</h2>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$4,500.00</span>
                 </div>
               </div>
             </a>
@@ -190,27 +335,27 @@
         </header>
         
         <div class="category-grid" data-animate="fade-in-up" data-delay="100">
-          <a href="/pages/parts/suspension.html" class="category-card">
+          <a href="#suspension" class="category-card" data-filter-link="suspension">
             <span class="category-card__icon" aria-hidden="true">懸</span>
             <span class="category-card__title">Suspension</span>
           </a>
-          <a href="/pages/parts/engine.html" class="category-card">
+          <a href="#engine" class="category-card" data-filter-link="engine">
             <span class="category-card__icon" aria-hidden="true">機</span>
             <span class="category-card__title">Engine</span>
           </a>
-          <a href="/pages/parts/exhaust.html" class="category-card">
+          <a href="#exhaust" class="category-card" data-filter-link="exhaust">
             <span class="category-card__icon" aria-hidden="true">排</span>
             <span class="category-card__title">Exhaust</span>
           </a>
-          <a href="/pages/parts/drivetrain.html" class="category-card">
+          <a href="#drivetrain" class="category-card" data-filter-link="drivetrain">
             <span class="category-card__icon" aria-hidden="true">駆</span>
             <span class="category-card__title">Drivetrain</span>
           </a>
-          <a href="/pages/parts/aero.html" class="category-card">
+          <a href="#aero" class="category-card" data-filter-link="aero">
             <span class="category-card__icon" aria-hidden="true">風</span>
             <span class="category-card__title">Aero</span>
           </a>
-          <a href="/pages/parts/wheels.html" class="category-card">
+          <a href="#wheels" class="category-card" data-filter-link="wheels">
             <span class="category-card__icon" aria-hidden="true">輪</span>
             <span class="category-card__title">Wheels</span>
           </a>

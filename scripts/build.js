@@ -60,10 +60,6 @@ function fixPaths(content, depth = 0) {
   return result;
 }
 
-function formatPrice(price) {
-  return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
 // =============================================================================
 // Copy Static Assets
 // =============================================================================
@@ -105,77 +101,6 @@ function copyPages() {
 }
 
 // =============================================================================
-// Generate Category Pages
-// =============================================================================
-
-function generateProductCard(product) {
-  const priceHtml = product.originalPrice 
-    ? `<span class="product-card__price-current">$${formatPrice(product.price)}</span>
-                  <span class="product-card__price-original">$${formatPrice(product.originalPrice)}</span>`
-    : `<span class="product-card__price-current">$${formatPrice(product.price)}</span>`;
-  
-  const badgeHtml = product.badge 
-    ? `<span class="product-card__badge product-card__badge--${product.badge}">${product.badge === 'sale' ? 'Sale' : 'New'}</span>`
-    : '';
-
-  return `
-          <article class="product-card">
-            <a href="/pages/products/${product.id}.html">
-              <div class="product-card__image">
-                <div class="img-placeholder">Product Image</div>
-                ${badgeHtml}
-              </div>
-              <div class="product-card__content">
-                <span class="product-card__brand">${product.brand}</span>
-                <h2 class="product-card__title">${product.title}</h2>
-                <div class="product-card__price">
-                  ${priceHtml}
-                </div>
-              </div>
-            </a>
-          </article>`;
-}
-
-function generateCategoryPages() {
-  const dataPath = join(ROOT, 'data', 'categories.json');
-  const templatePath = join(ROOT, 'templates', 'category.html');
-  
-  if (!existsSync(dataPath) || !existsSync(templatePath)) {
-    console.log('⚠️  Skipping category generation (missing data or template)');
-    return;
-  }
-  
-  const data = JSON.parse(readFileSync(dataPath, 'utf8'));
-  const template = readFileSync(templatePath, 'utf8');
-  
-  const partsDir = join(DIST, 'pages', 'parts');
-  mkdirSync(partsDir, { recursive: true });
-  
-  console.log('\n🏭 Generating category pages...');
-  
-  data.categories.forEach(category => {
-    const productsHtml = category.products.map(generateProductCard).join('\n');
-    
-    let html = template
-      .replace(/\{\{ID\}\}/g, category.id)
-      .replace(/\{\{NAME\}\}/g, category.name)
-      .replace(/\{\{JAPANESE\}\}/g, category.japanese)
-      .replace(/\{\{EYEBROW\}\}/g, category.eyebrow)
-      .replace(/\{\{DESCRIPTION\}\}/g, category.description)
-      .replace(/\{\{PRODUCTS\}\}/g, productsHtml);
-    
-    // Fix paths for depth 2 (pages/parts/*.html)
-    html = fixPaths(html, 2);
-    
-    const outputPath = join(partsDir, `${category.id}.html`);
-    writeFileSync(outputPath, html);
-    console.log(`   📄 pages/parts/${category.id}.html (${category.products.length} products)`);
-  });
-  
-  console.log(`\n✨ Generated ${data.categories.length} category pages`);
-}
-
-// =============================================================================
 // Stats
 // =============================================================================
 
@@ -213,7 +138,6 @@ console.log('🚀 Building Street Jewls...\n');
 clean();
 copyAssets();
 copyPages();
-generateCategoryPages();
 stats();
 
 console.log('\n✅ Build complete!\n');
