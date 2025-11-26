@@ -28,7 +28,6 @@ function fixPaths(content, isRoot = false) {
       .replace(/src="\/assets\//g, 'src="./assets/')
       .replace(/href="\/"/g, 'href="./"');
   } else {
-    // For pages in /pages/: /pages/about.html -> ./about.html
     return content
       .replace(/href="\/pages\//g, 'href="./')
       .replace(/href="\/assets\//g, 'href="../assets/')
