@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>JDM Parts | Street Jewls - Performance Parts & Kits</title>
+  <meta name="description" content="Shop hand-picked JDM performance parts. Coilovers, exhaust, engine parts and more. Quality parts for your build.">
+  
+  <link rel="canonical" href="https://streetjewls.com/parts.html">
+  <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Bebas+Neue&family=JetBrains+Mono:wght@400&family=Noto+Sans+JP:wght@400;700&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/assets/css/main.css">
+  
+  <style>
+    .parts-hero {
+      padding: calc(var(--space-2xl) + 70px) 0 var(--space-xl);
+      background: var(--color-black);
+      text-align: center;
+    }
+    
+    .filter-bar {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: var(--space-xl);
+    }
+    
+    .filter-btn {
+      padding: var(--space-sm) var(--space-lg);
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-silver);
+      background: transparent;
+      border: 1px solid var(--color-steel);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .filter-btn:hover,
+    .filter-btn.active {
+      color: var(--color-white);
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
+  
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo__text">STREET JEWLS</span>
+          <span class="logo__sub">ストリートジュエルズ</span>
+        </a>
+        
+        <nav class="main-nav">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/jewls.html" class="nav-link">Jewls</a>
+          <a href="/merchandise.html" class="nav-link">Merchandise</a>
+          <a href="/parts.html" class="nav-link active">Parts</a>
+          <a href="/about.html" class="nav-link">About</a>
+          <a href="/contact.html" class="nav-link">Contact</a>
+        </nav>
+        
+        <div class="header-actions">
+          <a href="/search.html" class="header-btn" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          </a>
+          <a href="/cart.html" class="header-btn" aria-label="Cart">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </a>
+        </div>
+        
+        <button class="nav-toggle" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- Hero -->
+    <section class="parts-hero">
+      <div class="container">
+        <div data-animate="fade-in-up">
+          <p style="font-family: var(--font-japanese); color: var(--color-primary); letter-spacing: 0.3em; margin-bottom: var(--space-md);">パーツ</p>
+          <h1 style="font-family: var(--font-display); font-size: clamp(3rem, 10vw, 5rem); margin-bottom: var(--space-md);">JDM Parts</h1>
+          <p style="color: var(--color-silver); font-size: 1.2rem; max-width: 600px; margin: 0 auto;">
+            Hand-picked quality parts from Japan's finest manufacturers.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section style="padding: var(--space-lg) 0; background: var(--color-carbon); border-bottom: 1px solid var(--color-graphite);">
+      <div class="container">
+        <div class="category-grid" data-animate="fade-in-up" style="grid-template-columns: repeat(6, 1fr);">
+          <a href="/parts/suspension.html" class="category-card" style="aspect-ratio: auto; padding: var(--space-lg);">
+            <span class="category-card__icon" style="position: static; transform: none; margin-bottom: var(--space-sm);">懸</span>
+            <span class="category-card__title" style="position: static;">Suspension</span>
+          </a>
+          <a href="/parts/engine.html" class="category-card" style="aspect-ratio: auto; padding: var(--space-lg);">
+            <span class="category-card__icon" style="position: static; transform: none; margin-bottom: var(--space-sm);">機</span>
+            <span class="category-card__title" style="position: static;">Engine</span>
+          </a>
+          <a href="/parts/exhaust.html" class="category-card" style="aspect-ratio: auto; padding: var(--space-lg);">
+            <span class="category-card__icon" style="position: static; transform: none; margin-bottom: var(--space-sm);">排</span>
+            <span class="category-card__title" style="position: static;">Exhaust</span>
+          </a>
+          <a href="/parts/drivetrain.html" class="category-card" style="aspect-ratio: auto; padding: var(--space-lg);">
+            <span class="category-card__icon" style="position: static; transform: none; margin-bottom: var(--space-sm);">駆</span>
+            <span class="category-card__title" style="position: static;">Drivetrain</span>
+          </a>
+          <a href="/parts/aero.html" class="category-card" style="aspect-ratio: auto; padding: var(--space-lg);">
+            <span class="category-card__icon" style="position: static; transform: none; margin-bottom: var(--space-sm);">風</span>
+            <span class="category-card__title" style="position: static;">Aero</span>
+          </a>
+          <a href="/parts/wheels.html" class="category-card" style="aspect-ratio: auto; padding: var(--space-lg);">
+            <span class="category-card__icon" style="position: static; transform: none; margin-bottom: var(--space-sm);">輪</span>
+            <span class="category-card__title" style="position: static;">Wheels</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products -->
+    <section class="section" style="background: var(--color-dark);">
+      <div class="container">
+        <!-- Filter Bar -->
+        <div class="filter-bar" data-animate="fade-in-up">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="suspension">Suspension</button>
+          <button class="filter-btn" data-filter="engine">Engine</button>
+          <button class="filter-btn" data-filter="exhaust">Exhaust</button>
+        </div>
+        
+        <div class="product-grid" data-animate="fade-in-up" data-delay="100">
+          <!-- Products matching client's current store -->
+          <article class="product-card" data-category="suspension">
+            <a href="/products/tein-rx1-coilovers.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+                <span class="product-card__badge product-card__badge--sale">Sale</span>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">TEIN</span>
+                <h3 class="product-card__title">RX1 Coilovers - 2013+ GT86 / BRZ / FRS / 2022+ GR86</h3>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$1,320.50</span>
+                  <span class="product-card__price-original">$1,390.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+          
+          <article class="product-card" data-category="suspension">
+            <a href="/products/hks-hipermax-s-frs.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">HKS</span>
+                <h3 class="product-card__title">Hipermax S Coilovers - 2013-2021 Scion FR-S / Toyota GT86 / Subaru BRZ</h3>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$1,755.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+          
+          <article class="product-card" data-category="suspension">
+            <a href="/products/hks-hipermax-s-gr86.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+                <span class="product-card__badge product-card__badge--new">New</span>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">HKS</span>
+                <h3 class="product-card__title">Hipermax S Coilovers - 2022+ Toyota GR86 / Subaru BRZ</h3>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$2,025.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+          
+          <article class="product-card" data-category="drivetrain">
+            <a href="/products/cusco-lsd.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">CUSCO</span>
+                <h3 class="product-card__title">Type RS 1.5 Way LSD - 86 / BRZ</h3>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$1,285.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+          
+          <article class="product-card" data-category="suspension">
+            <a href="/products/bc-racing-coilovers.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">BC Racing</span>
+                <h3 class="product-card__title">BR Series Coilovers - GT86 / BRZ / FRS</h3>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$1,095.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+          
+          <article class="product-card" data-category="exhaust">
+            <a href="/products/tomei-exhaust.html">
+              <div class="product-card__image">
+                <div class="img-placeholder">Product Image</div>
+              </div>
+              <div class="product-card__content">
+                <span class="product-card__brand">TOMEI</span>
+                <h3 class="product-card__title">Expreme Ti Titanium Exhaust - 86 / BRZ</h3>
+                <div class="product-card__price">
+                  <span class="product-card__price-current">$1,450.00</span>
+                </div>
+              </div>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hand-Picked Banner -->
+    <section style="padding: var(--space-xl) 0; background: var(--color-carbon); text-align: center; border-top: 1px solid var(--color-graphite);">
+      <div class="container">
+        <div style="display: flex; align-items: center; justify-content: center; gap: var(--space-lg); flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: var(--space-md);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.1em;">Hand-Picked Quality</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: var(--space-md);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            <span style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.1em;">Fast Shipping</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: var(--space-md);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.1em;">Expert Support</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-brand__logo">STREET JEWLS</div>
+          <p class="footer-brand__text">Hand-picked parts by enthusiasts, for enthusiasts.</p>
+        </div>
+        <nav class="footer-nav">
+          <h4 class="footer-nav__title">Shop</h4>
+          <ul><li><a href="/parts.html">All Parts</a></li><li><a href="/merchandise.html">Merchandise</a></li></ul>
+        </nav>
+        <nav class="footer-nav">
+          <h4 class="footer-nav__title">Company</h4>
+          <ul><li><a href="/about.html">About Us</a></li><li><a href="/contact.html">Contact</a></li></ul>
+        </nav>
+        <nav class="footer-nav">
+          <h4 class="footer-nav__title">Support</h4>
+          <ul><li><a href="/shipping.html">Shipping</a></li><li><a href="/returns.html">Returns</a></li></ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-bottom__copy">&copy; <span id="year">2024</span> Street Jewls. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
