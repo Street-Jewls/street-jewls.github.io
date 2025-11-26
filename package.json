@@ -1,0 +1,26 @@
+{
+  "name": "street-jewls-web",
+  "version": "1.0.0",
+  "description": "Street Jewls - Premium JDM Parts E-commerce Website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve . -l 3000",
+    "build": "node scripts/build.js",
+    "lint": "npm run lint:css && npm run lint:js",
+    "lint:css": "npx stylelint 'assets/css/**/*.css' --fix",
+    "lint:js": "npx eslint 'assets/js/**/*.js' --fix",
+    "test": "echo 'No tests configured' && exit 0",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "author": "Street Jewls",
+  "license": "UNLICENSED"
+}
