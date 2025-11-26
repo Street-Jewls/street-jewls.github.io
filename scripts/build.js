@@ -5,18 +5,13 @@
  * Copies source files to dist for deployment
  */
 
-import { existsSync, mkdirSync, cpSync, rmSync, readdirSync, statSync } from 'fs';
+import { existsSync, mkdirSync, cpSync, rmSync, readdirSync, statSync, readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const DIST = join(ROOT, 'dist');
-
-const INCLUDE = [
-  'assets',
-  'pages'
-];
 
 function clean() {
   if (existsSync(DIST)) {
@@ -25,25 +20,59 @@ function clean() {
   mkdirSync(DIST, { recursive: true });
 }
 
+function fixPaths(content, isRoot = false) {
+  if (isRoot) {
+    // For index.html in root: /pages/about.html -> ./pages/about.html
+    // and /assets/ -> ./assets/
+    return content
+      .replace(/href="\/pages\//g, 'href="./pages/')
+      .replace(/href="\/assets\//g, 'href="./assets/')
+      .replace(/src="\/assets\//g, 'src="./assets/')
+      .replace(/href="\/"/g, 'href="./"');
+  } else {
+    // For pages in /pages/: /pages/about.html -> ./about.html
+    // and /assets/ -> ../assets/
+    // and / (home) -> ../index.html
+    return content
+      .replace(/href="\/pages\//g, 'href="./')
+      .replace(/href="\/assets\//g, 'href="../assets/')
+      .replace(/src="\/assets\//g, 'src="../assets/')
+      .replace(/href="\/"/g, 'href="../index.html"');
+  }
+}
+
 function copy() {
-  INCLUDE.forEach(dir => {
-    const src = join(ROOT, dir);
-    const dest = join(DIST, dir);
+  // Copy assets
+  const assetsSrc = join(ROOT, 'assets');
+  const assetsDest = join(DIST, 'assets');
+  if (existsSync(assetsSrc)) {
+    console.log('📁 Copying assets/');
+    cpSync(assetsSrc, assetsDest, { recursive: true });
+  }
+
+  // Copy and fix pages
+  const pagesSrc = join(ROOT, 'pages');
+  const pagesDest = join(DIST, 'pages');
+  mkdirSync(pagesDest, { recursive: true });
+
+  const pages = readdirSync(pagesSrc).filter(f => f.endsWith('.html'));
+  
+  pages.forEach(page => {
+    const srcPath = join(pagesSrc, page);
+    const content = readFileSync(srcPath, 'utf8');
     
-    if (existsSync(src)) {
-      console.log(`📁 Copying ${dir}/`);
-      cpSync(src, dest, { recursive: true });
+    if (page === 'index.html') {
+      // index.html goes to root
+      console.log('📄 Copying index.html to root (with fixed paths)');
+      const fixedContent = fixPaths(content, true);
+      writeFileSync(join(DIST, 'index.html'), fixedContent);
+    } else {
+      // Other pages go to /pages/
+      console.log(`📄 Copying pages/${page} (with fixed paths)`);
+      const fixedContent = fixPaths(content, false);
+      writeFileSync(join(pagesDest, page), fixedContent);
     }
   });
-  
-  // Copy index.html to root
-  const indexSrc = join(ROOT, 'pages', 'index.html');
-  const indexDest = join(DIST, 'index.html');
-  
-  if (existsSync(indexSrc)) {
-    console.log('📄 Copying index.html to root');
-    cpSync(indexSrc, indexDest);
-  }
 }
 
 function stats() {
