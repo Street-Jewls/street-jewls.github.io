@@ -205,7 +205,7 @@
         } else {
           throw new Error('Server error');
         }
-      } catch (error) {
+      } catch (_error) {
         // Fallback to mailto
         this.openMailto(formData);
       } finally {
@@ -280,35 +280,88 @@
    */
   const ProductFilter = {
     init: function () {
-      const filterBtns = document.querySelectorAll('.filter-btn');
+      this.filterBtns = document.querySelectorAll('.filter-btn');
+      this.categoryLinks = document.querySelectorAll('[data-filter-link]');
+      this.productsSection = document.getElementById('products');
 
-      if (!filterBtns.length) {
+      if (!this.filterBtns.length) {
         return;
       }
 
-      filterBtns.forEach(function (btn) {
-        btn.addEventListener('click', ProductFilter.handleFilter);
+      var self = this;
+
+      // Bind filter button clicks
+      this.filterBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          self.applyFilter(this.dataset.filter, true);
+        });
+      });
+
+      // Bind category card clicks
+      this.categoryLinks.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          var filter = this.dataset.filterLink;
+          self.applyFilter(filter, true);
+          self.scrollToProducts();
+        });
+      });
+
+      // Check URL hash on page load
+      this.checkHash();
+
+      // Listen for hash changes
+      window.addEventListener('hashchange', function () {
+        self.checkHash();
       });
     },
 
-    handleFilter: function () {
-      const filter = this.dataset.filter;
-      const items = document.querySelectorAll('[data-category]');
-      const buttons = document.querySelectorAll('.filter-btn');
+    checkHash: function () {
+      var hash = window.location.hash.slice(1);
+      if (hash && hash !== 'products') {
+        this.applyFilter(hash, false);
+        this.scrollToProducts();
+      }
+    },
+
+    applyFilter: function (filter, updateHash) {
+      var items = document.querySelectorAll('[data-category]');
 
       // Update active button
-      buttons.forEach(function (btn) {
-        btn.classList.remove('active');
-        btn.setAttribute('aria-pressed', 'false');
+      this.filterBtns.forEach(function (btn) {
+        var isActive = btn.dataset.filter === filter;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
-
-      this.classList.add('active');
-      this.setAttribute('aria-pressed', 'true');
 
       // Filter items
       items.forEach(function (item) {
-        const shouldShow = filter === 'all' || item.dataset.category === filter;
+        var shouldShow = filter === 'all' || item.dataset.category === filter;
         item.style.display = shouldShow ? '' : 'none';
+      });
+
+      // Update URL hash
+      if (updateHash) {
+        if (filter === 'all') {
+          window.history.pushState(null, '', window.location.pathname);
+        } else {
+          window.history.pushState(null, '', '#' + filter);
+        }
+      }
+    },
+
+    scrollToProducts: function () {
+      if (!this.productsSection) {
+        return;
+      }
+
+      var header = document.querySelector('.site-header');
+      var headerHeight = header ? header.offsetHeight : 0;
+      var targetPosition = this.productsSection.getBoundingClientRect().top + window.scrollY - headerHeight - 20;
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
       });
     }
   };
