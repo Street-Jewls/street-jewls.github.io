@@ -22,8 +22,6 @@ function clean() {
 
 function fixPaths(content, isRoot = false) {
   if (isRoot) {
-    // For index.html in root: /pages/about.html -> ./pages/about.html
-    // and /assets/ -> ./assets/
     return content
       .replace(/href="\/pages\//g, 'href="./pages/')
       .replace(/href="\/assets\//g, 'href="./assets/')
@@ -31,8 +29,6 @@ function fixPaths(content, isRoot = false) {
       .replace(/href="\/"/g, 'href="./"');
   } else {
     // For pages in /pages/: /pages/about.html -> ./about.html
-    // and /assets/ -> ../assets/
-    // and / (home) -> ../index.html
     return content
       .replace(/href="\/pages\//g, 'href="./')
       .replace(/href="\/assets\//g, 'href="../assets/')
@@ -42,7 +38,6 @@ function fixPaths(content, isRoot = false) {
 }
 
 function copy() {
-  // Copy assets
   const assetsSrc = join(ROOT, 'assets');
   const assetsDest = join(DIST, 'assets');
   if (existsSync(assetsSrc)) {
@@ -50,7 +45,6 @@ function copy() {
     cpSync(assetsSrc, assetsDest, { recursive: true });
   }
 
-  // Copy and fix pages
   const pagesSrc = join(ROOT, 'pages');
   const pagesDest = join(DIST, 'pages');
   mkdirSync(pagesDest, { recursive: true });
@@ -62,12 +56,10 @@ function copy() {
     const content = readFileSync(srcPath, 'utf8');
     
     if (page === 'index.html') {
-      // index.html goes to root
       console.log('📄 Copying index.html to root (with fixed paths)');
       const fixedContent = fixPaths(content, true);
       writeFileSync(join(DIST, 'index.html'), fixedContent);
     } else {
-      // Other pages go to /pages/
       console.log(`📄 Copying pages/${page} (with fixed paths)`);
       const fixedContent = fixPaths(content, false);
       writeFileSync(join(pagesDest, page), fixedContent);
