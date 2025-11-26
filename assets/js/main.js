@@ -205,7 +205,7 @@
         } else {
           throw new Error('Server error');
         }
-      } catch (error) {
+      } catch (_error) {
         // Fallback to mailto
         this.openMailto(formData);
       } finally {
@@ -343,9 +343,9 @@
       // Update URL hash
       if (updateHash) {
         if (filter === 'all') {
-          history.pushState(null, '', window.location.pathname);
+          window.history.pushState(null, '', window.location.pathname);
         } else {
-          history.pushState(null, '', '#' + filter);
+          window.history.pushState(null, '', '#' + filter);
         }
       }
     },
