@@ -2,75 +2,79 @@
 
 /**
  * Street Jewls - Build Script
- * Copies and prepares files for production deployment
+ * Copies source files to dist for deployment
  */
 
-const fs = require('fs');
-const path = require('path');
+import { existsSync, mkdirSync, cpSync, rmSync, readdirSync, statSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const SRC_DIR = process.cwd();
-const DIST_DIR = path.join(process.cwd(), 'dist');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(__dirname, '..');
+const DIST = join(ROOT, 'dist');
 
-// Directories and files to copy
-const COPY_ITEMS = [
+const INCLUDE = [
   'assets',
-  'pages',
+  'pages'
 ];
 
-// Files to copy to root of dist
-const ROOT_FILES = [
-  'pages/index.html',
-];
-
-function ensureDir(dir) {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+function clean() {
+  if (existsSync(DIST)) {
+    rmSync(DIST, { recursive: true });
   }
+  mkdirSync(DIST, { recursive: true });
 }
 
-function copyRecursive(src, dest) {
-  const stats = fs.statSync(src);
-  
-  if (stats.isDirectory()) {
-    ensureDir(dest);
-    const items = fs.readdirSync(src);
-    for (const item of items) {
-      copyRecursive(path.join(src, item), path.join(dest, item));
-    }
-  } else {
-    fs.copyFileSync(src, dest);
-  }
-}
-
-function build() {
-  console.log('🚀 Building Street Jewls...\n');
-  
-  // Clean dist
-  if (fs.existsSync(DIST_DIR)) {
-    fs.rmSync(DIST_DIR, { recursive: true });
-  }
-  ensureDir(DIST_DIR);
-  
-  // Copy directories
-  for (const item of COPY_ITEMS) {
-    const src = path.join(SRC_DIR, item);
-    const dest = path.join(DIST_DIR, item);
+function copy() {
+  INCLUDE.forEach(dir => {
+    const src = join(ROOT, dir);
+    const dest = join(DIST, dir);
     
-    if (fs.existsSync(src)) {
-      console.log(`  📁 Copying ${item}/`);
-      copyRecursive(src, dest);
+    if (existsSync(src)) {
+      console.log(`📁 Copying ${dir}/`);
+      cpSync(src, dest, { recursive: true });
     }
-  }
+  });
   
   // Copy index.html to root
-  const indexSrc = path.join(SRC_DIR, 'pages', 'index.html');
-  const indexDest = path.join(DIST_DIR, 'index.html');
-  if (fs.existsSync(indexSrc)) {
-    console.log('  📄 Copying index.html to root');
-    fs.copyFileSync(indexSrc, indexDest);
-  }
+  const indexSrc = join(ROOT, 'pages', 'index.html');
+  const indexDest = join(DIST, 'index.html');
   
-  console.log('\n✅ Build complete! Output in dist/\n');
+  if (existsSync(indexSrc)) {
+    console.log('📄 Copying index.html to root');
+    cpSync(indexSrc, indexDest);
+  }
 }
 
-build();
+function stats() {
+  let fileCount = 0;
+  let totalSize = 0;
+  
+  function walk(dir) {
+    const items = readdirSync(dir);
+    items.forEach(item => {
+      const path = join(dir, item);
+      const stat = statSync(path);
+      
+      if (stat.isDirectory()) {
+        walk(path);
+      } else {
+        fileCount++;
+        totalSize += stat.size;
+      }
+    });
+  }
+  
+  walk(DIST);
+  
+  const sizeKB = (totalSize / 1024).toFixed(2);
+  console.log(`\n📊 ${fileCount} files, ${sizeKB} KB total`);
+}
+
+console.log('🚀 Building Street Jewls...\n');
+
+clean();
+copy();
+stats();
+
+console.log('\n✅ Build complete!\n');

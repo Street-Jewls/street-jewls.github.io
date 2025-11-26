@@ -1,35 +1,26 @@
 {
-  "name": "street-jewls-website",
+  "name": "street-jewls-web",
   "version": "1.0.0",
-  "description": "Street Jewls JDM e-commerce website templates",
+  "description": "Street Jewls - Premium JDM Parts E-commerce Website",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "serve -s . -l 3000",
+    "dev": "npx serve . -l 3000",
     "build": "node scripts/build.js",
     "lint": "npm run lint:css && npm run lint:js",
-    "lint:css": "stylelint \"assets/css/**/*.css\"",
-    "lint:js": "eslint \"assets/js/**/*.js\"",
-    "lint:fix": "npm run lint:css -- --fix && npm run lint:js -- --fix",
-    "validate:html": "html-validate \"pages/**/*.html\"",
-    "test": "echo \"No tests configured yet\" && exit 0",
+    "lint:css": "npx stylelint 'assets/css/**/*.css' --fix",
+    "lint:js": "npx eslint 'assets/js/**/*.js' --fix",
+    "test": "echo 'No tests configured' && exit 0",
     "clean": "rm -rf dist"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "stylelint": "^16.2.0",
-    "stylelint-config-standard": "^36.0.0",
-    "html-validate": "^8.18.0",
-    "serve": "^14.2.1"
+    "eslint": "^9.0.0",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
-  "keywords": [
-    "jdm",
-    "car-parts",
-    "ecommerce",
-    "street-jewls"
-  ],
   "author": "Street Jewls",
   "license": "UNLICENSED"
 }
