@@ -2,16 +2,19 @@
 
 /**
  * Street Jewls - Build Script
- * Copies source files to dist and generates category pages
+ * Copies source files to dist, generates slideshows from image directories
  */
 
 import { existsSync, mkdirSync, cpSync, rmSync, readdirSync, statSync, readFileSync, writeFileSync } from 'fs';
-import { join, dirname } from 'path';
+import { join, dirname, extname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const DIST = join(ROOT, 'dist');
+
+// Image extensions to scan for
+const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif'];
 
 // =============================================================================
 // Utility Functions
@@ -61,6 +64,73 @@ function fixPaths(content, depth = 0) {
 }
 
 // =============================================================================
+// Slideshow Processing
+// =============================================================================
+
+function getSlideshowImages(slideshowName) {
+  const slideshowDir = join(ROOT, 'assets', 'images', 'slideshows', slideshowName);
+  
+  if (!existsSync(slideshowDir)) {
+    return [];
+  }
+  
+  const files = readdirSync(slideshowDir);
+  const images = files
+    .filter(file => IMAGE_EXTENSIONS.includes(extname(file).toLowerCase()))
+    .sort((a, b) => {
+      // Natural sort - handles 1, 2, 10 correctly
+      const numA = parseInt(a.match(/\d+/) || [0]);
+      const numB = parseInt(b.match(/\d+/) || [0]);
+      if (numA !== numB) return numA - numB;
+      return a.localeCompare(b);
+    });
+  
+  return images;
+}
+
+function generateSlideshowHTML(slideshowName, images) {
+  if (images.length === 0) {
+    // Return placeholder if no images
+    return `
+            <div class="slideshow__slide slideshow__slide--placeholder">
+              <div class="slideshow__placeholder">
+                <span class="slideshow__placeholder-text">Drop images into:</span>
+                <code>assets/images/slideshows/${slideshowName}/</code>
+                <span class="slideshow__placeholder-hint">Supports: JPG, PNG, GIF, WebP</span>
+              </div>
+            </div>`;
+  }
+  
+  const slides = images.map((image, index) => {
+    const isFirst = index === 0;
+    return `
+            <div class="slideshow__slide${isFirst ? ' slideshow__slide--active' : ''}">
+              <img src="/assets/images/slideshows/${slideshowName}/${image}" alt="Slide ${index + 1}" loading="${isFirst ? 'eager' : 'lazy'}">
+            </div>`;
+  }).join('');
+  
+  return slides;
+}
+
+function processSlideshows(content) {
+  // Find all {{SLIDESHOW:name}} placeholders
+  const regex = /\{\{SLIDESHOW:([a-z0-9-]+)\}\}/gi;
+  
+  return content.replace(regex, (match, slideshowName) => {
+    const images = getSlideshowImages(slideshowName);
+    const html = generateSlideshowHTML(slideshowName, images);
+    
+    if (images.length > 0) {
+      console.log(`   🖼️  ${slideshowName}: ${images.length} images`);
+    } else {
+      console.log(`   ⚠️  ${slideshowName}: No images (placeholder shown)`);
+    }
+    
+    return html;
+  });
+}
+
+// =============================================================================
 // Copy Static Assets
 // =============================================================================
 
@@ -86,14 +156,20 @@ function copyPages() {
   
   pages.forEach(page => {
     const srcPath = join(pagesSrc, page);
-    const content = readFileSync(srcPath, 'utf8');
+    let content = readFileSync(srcPath, 'utf8');
+    
+    // Process slideshows
+    if (content.includes('{{SLIDESHOW:')) {
+      console.log(`📄 Building ${page === 'index.html' ? 'index.html' : 'pages/' + page}`);
+      content = processSlideshows(content);
+    } else {
+      console.log(`📄 Building ${page === 'index.html' ? 'index.html (root)' : 'pages/' + page}`);
+    }
     
     if (page === 'index.html') {
-      console.log('📄 Building index.html (root)');
       const fixedContent = fixPaths(content, 0);
       writeFileSync(join(DIST, 'index.html'), fixedContent);
     } else {
-      console.log(`📄 Building pages/${page}`);
       const fixedContent = fixPaths(content, 1);
       writeFileSync(join(pagesDest, page), fixedContent);
     }
