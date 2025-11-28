@@ -1119,10 +1119,6 @@ h6 { font-size: var(--text-lg); }
 .fog-text .fog-word.fog-revealed {
   opacity: 1;
   filter: blur(0);
-}
-
-/* Cloud-like glow effect on revealed words */
-.fog-text .fog-word.fog-revealed {
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
@@ -1328,8 +1324,7 @@ h6 { font-size: var(--text-lg); }
 }
 
 .brz-car--svg img {
-  filter: none;
-  drop-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
 }
 
 @keyframes car-hover {
