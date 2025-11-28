@@ -103,9 +103,18 @@ function generateSlideshowHTML(slideshowName, images) {
   
   const slides = images.map((image, index) => {
     const isFirst = index === 0;
+    // URL encode the filename to handle spaces, brackets, parentheses
+    const encodedImage = encodeURIComponent(image);
+    // Create a clean alt text from the filename
+    const altText = image
+      .replace(/\.[^.]+$/, '') // Remove extension
+      .replace(/[\[\]()-]/g, '') // Remove brackets, parens, hyphens
+      .replace(/\d+$/, '') // Remove trailing numbers
+      .trim();
+    
     return `
             <div class="slideshow__slide${isFirst ? ' slideshow__slide--active' : ''}">
-              <img src="/assets/images/slideshows/${slideshowName}/${image}" alt="Slide ${index + 1}" loading="${isFirst ? 'eager' : 'lazy'}">
+              <img src="/assets/images/slideshows/${slideshowName}/${encodedImage}" alt="${altText || 'Slide ' + (index + 1)}" loading="${isFirst ? 'eager' : 'lazy'}">
             </div>`;
   }).join('');
   

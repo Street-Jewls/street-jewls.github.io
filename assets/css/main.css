@@ -1321,6 +1321,17 @@ h6 { font-size: var(--text-lg); }
   filter: brightness(0.9) contrast(1.1);
 }
 
+/* SVG variant - no filter, larger size */
+.brz-car--svg {
+  width: min(700px, 90vw);
+  bottom: 40px;
+}
+
+.brz-car--svg img {
+  filter: none;
+  drop-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
 @keyframes car-hover {
   0%, 100% {
     transform: translateY(0) rotate(-0.5deg);
