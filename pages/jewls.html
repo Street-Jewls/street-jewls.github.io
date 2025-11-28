@@ -62,24 +62,53 @@
     <section class="section bg-black" style="padding-top: calc(var(--header-height) + var(--space-3xl));">
       <div class="container">
         <header class="section-header section-header--center" data-animate="fade-in-up">
-          <p class="section-header__eyebrow">宝石コレクション</p>
+          <p class="section-header__eyebrow">Build Gallery</p>
           <h1 style="font-family: var(--font-display); font-size: var(--text-5xl); letter-spacing: 0.2em;">JEWLS</h1>
           <p class="section-header__subtitle">Community builds featuring Street Jewls parts</p>
         </header>
       </div>
     </section>
 
+    <!-- Turbo BRZ Slideshow -->
+    <section class="section bg-dark slideshow-section">
+      <div class="container">
+        <header class="section-header section-header--center" data-animate="fade-in-up">
+          <p class="section-header__eyebrow">Featured Build</p>
+          <h2 class="section-header__title">Turbo</h2>
+          <p class="section-header__subtitle">2023 Subaru BRZ</p>
+        </header>
+        
+        <div class="slideshow slideshow--large" data-slideshow="turbo-brz" data-animate="fade-in-up" data-delay="100">
+          <div class="slideshow__track">
+            {{SLIDESHOW:turbo-brz}}
+          </div>
+          <button class="slideshow__btn slideshow__btn--prev" aria-label="Previous slide">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="slideshow__btn slideshow__btn--next" aria-label="Next slide">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div class="slideshow__dots"></div>
+          <div class="slideshow__counter"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- Gallery Grid -->
     <section class="section bg-black jewls-gallery">
       <div class="container">
-        <div class="jewls-grid" data-animate="fade-in-up">
+        <header class="section-header section-header--center" data-animate="fade-in-up">
+          <p class="section-header__eyebrow">More Builds</p>
+          <h2 class="section-header__title">Community Highlights</h2>
+        </header>
+        
+        <div class="jewls-grid" data-animate="fade-in-up" data-delay="100">
           <article class="jewls-card jewls-card--featured">
             <img src="/assets/images/brz-side-gas-station.jpg" alt="Red Subaru BRZ side profile at gas station" loading="lazy">
             <div class="jewls-card__content">
-              <span class="jewls-card__tag">Featured Build</span>
-              <h2 class="jewls-card__title">Julian's BRZ</h2>
+              <span class="jewls-card__tag">Featured</span>
+              <h3 class="jewls-card__title">Julian's BRZ</h3>
               <p class="jewls-card__subtitle">2023 Subaru BRZ • Street Build</p>
-              <p class="jewls-card__jp" lang="ja">ジュリアンのBRZ</p>
             </div>
           </article>
           
@@ -87,7 +116,6 @@
             <img src="/assets/images/brz-front-quarter.jpg" alt="Red BRZ front quarter view with Enkei wheels" loading="lazy">
             <div class="jewls-card__content">
               <h3 class="jewls-card__title">Perfect Fitment</h3>
-              <p class="jewls-card__jp" lang="ja">完璧なフィットメント</p>
             </div>
           </article>
           
@@ -95,7 +123,6 @@
             <img src="/assets/images/enkei-wheel-closeup.jpg" alt="Enkei Performance wheel closeup" loading="lazy">
             <div class="jewls-card__content">
               <h3 class="jewls-card__title">Wheel Detail</h3>
-              <p class="jewls-card__jp" lang="ja">ホイールディテール</p>
             </div>
           </article>
           
@@ -103,7 +130,6 @@
             <div class="jewls-card__empty">
               <span class="jewls-card__empty-icon" aria-hidden="true">+</span>
               <span class="jewls-card__empty-text">Your Build Here</span>
-              <span class="jewls-card__empty-jp" lang="ja">あなたのビルド</span>
             </div>
           </article>
         </div>

@@ -22,6 +22,8 @@
   document.addEventListener('DOMContentLoaded', function () {
     Navigation.init();
     ScrollAnimations.init();
+    FogReveal.init();
+    Slideshow.init();
     ContactForm.init();
     SmoothScroll.init();
     ProductFilter.init();
@@ -161,6 +163,359 @@
   };
 
   /**
+   * Fog Reveal Animation Module
+   * Creates a fog/cloud-like text reveal effect
+   */
+  const FogReveal = {
+    init: function () {
+      this.elements = document.querySelectorAll('[data-animate="fog-reveal"]');
+      this.fogTexts = document.querySelectorAll('.fog-text');
+      this.divider = document.querySelector('.story__divider');
+
+      if (!this.elements.length) {
+        return;
+      }
+
+      // Prepare fog text elements
+      this.prepareFogText();
+
+      // Set up intersection observer
+      if ('IntersectionObserver' in window) {
+        this.setupObserver();
+      } else {
+        // Fallback: show everything immediately
+        this.showAllImmediately();
+      }
+    },
+
+    prepareFogText: function () {
+      var self = this;
+
+      this.fogTexts.forEach(function (textEl) {
+        var text = textEl.textContent.trim();
+        var wordsPerChunk = parseInt(textEl.dataset.words, 10) || 3;
+        var isJapanese = textEl.lang === 'ja';
+
+        // Split text into words
+        var words;
+        if (isJapanese) {
+          // For Japanese, split by common particles and punctuation
+          words = self.splitJapanese(text);
+        } else {
+          words = text.split(/\s+/);
+        }
+
+        // Group words into chunks
+        var chunks = [];
+        for (var i = 0; i < words.length; i += wordsPerChunk) {
+          chunks.push(words.slice(i, i + wordsPerChunk).join(isJapanese ? '' : ' '));
+        }
+
+        // Clear and rebuild with spans
+        textEl.textContent = '';
+        chunks.forEach(function (chunk, index) {
+          var span = document.createElement('span');
+          span.className = 'fog-word';
+          span.textContent = chunk;
+          span.style.transitionDelay = (index * 120) + 'ms';
+          textEl.appendChild(span);
+
+          // Add space between chunks (except for Japanese)
+          if (!isJapanese && index < chunks.length - 1) {
+            textEl.appendChild(document.createTextNode(' '));
+          }
+        });
+      });
+    },
+
+    splitJapanese: function (text) {
+      // Split Japanese text by common break points
+      // This is a simple approach - splits by punctuation and particles
+      var segments = [];
+      var current = '';
+
+      for (var i = 0; i < text.length; i++) {
+        var char = text[i];
+        current += char;
+
+        // Break on punctuation or every ~4-6 characters for natural grouping
+        if (/[。、！？：；]/.test(char) || current.length >= 5) {
+          segments.push(current);
+          current = '';
+        }
+      }
+
+      if (current) {
+        segments.push(current);
+      }
+
+      return segments;
+    },
+
+    setupObserver: function () {
+      const self = this;
+
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            const element = entry.target;
+            const delay = parseInt(element.dataset.delay, 10) || 0;
+
+            setTimeout(function () {
+              self.revealElement(element);
+            }, delay);
+
+            observer.unobserve(element);
+          }
+        });
+      }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+      });
+
+      this.elements.forEach(function (el) {
+        observer.observe(el);
+      });
+
+      // Also observe the divider
+      if (this.divider) {
+        observer.observe(this.divider);
+      }
+    },
+
+    revealElement: function (element) {
+      // Add visibility class
+      element.classList.add('fog-visible');
+
+      // Reveal fog words with staggered timing
+      var fogWords = element.querySelectorAll('.fog-word');
+      fogWords.forEach(function (word, index) {
+        setTimeout(function () {
+          word.classList.add('fog-revealed');
+        }, index * 150);
+      });
+    },
+
+    showAllImmediately: function () {
+      this.elements.forEach(function (el) {
+        el.classList.add('fog-visible');
+      });
+
+      document.querySelectorAll('.fog-word').forEach(function (word) {
+        word.classList.add('fog-revealed');
+      });
+
+      if (this.divider) {
+        this.divider.classList.add('fog-visible');
+      }
+    }
+  };
+
+  /**
+   * Slideshow Module
+   * Auto-playing image carousel with touch support
+   */
+  const Slideshow = {
+    instances: [],
+
+    init: function () {
+      var self = this;
+      var slideshows = document.querySelectorAll('[data-slideshow]');
+
+      slideshows.forEach(function (el) {
+        var instance = self.createInstance(el);
+        if (instance) {
+          self.instances.push(instance);
+        }
+      });
+    },
+
+    createInstance: function (container) {
+      var slides = container.querySelectorAll('.slideshow__slide:not(.slideshow__slide--placeholder)');
+
+      // Skip if no real slides
+      if (slides.length === 0) {
+        return null;
+      }
+
+      var instance = {
+        container: container,
+        slides: slides,
+        currentIndex: 0,
+        autoplayTimer: null,
+        autoplayDelay: 5000,
+        isPlaying: true
+      };
+
+      this.setupControls(instance);
+      this.setupDots(instance);
+      this.setupCounter(instance);
+      this.setupTouch(instance);
+      this.startAutoplay(instance);
+      this.setupPauseOnHover(instance);
+
+      return instance;
+    },
+
+    setupControls: function (instance) {
+      var self = this;
+      var prevBtn = instance.container.querySelector('.slideshow__btn--prev');
+      var nextBtn = instance.container.querySelector('.slideshow__btn--next');
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function () {
+          self.prev(instance);
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+          self.next(instance);
+        });
+      }
+
+      // Keyboard navigation
+      instance.container.setAttribute('tabindex', '0');
+      instance.container.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') {
+          self.prev(instance);
+        } else if (e.key === 'ArrowRight') {
+          self.next(instance);
+        }
+      });
+    },
+
+    setupDots: function (instance) {
+      var self = this;
+      var dotsContainer = instance.container.querySelector('.slideshow__dots');
+
+      if (!dotsContainer || instance.slides.length <= 1) {
+        return;
+      }
+
+      // Create dots
+      for (var i = 0; i < instance.slides.length; i++) {
+        (function (index) {
+          var dot = document.createElement('button');
+          dot.className = 'slideshow__dot' + (index === 0 ? ' slideshow__dot--active' : '');
+          dot.setAttribute('aria-label', 'Go to slide ' + (index + 1));
+          dot.addEventListener('click', function () {
+            self.goTo(instance, index);
+          });
+          dotsContainer.appendChild(dot);
+        })(i);
+      }
+
+      instance.dots = dotsContainer.querySelectorAll('.slideshow__dot');
+    },
+
+    setupCounter: function (instance) {
+      var counter = instance.container.querySelector('.slideshow__counter');
+      if (counter && instance.slides.length > 1) {
+        instance.counter = counter;
+        this.updateCounter(instance);
+      }
+    },
+
+    setupTouch: function (instance) {
+      var self = this;
+      var startX = 0;
+      var endX = 0;
+      var threshold = 50;
+
+      instance.container.addEventListener('touchstart', function (e) {
+        startX = e.touches[0].clientX;
+      }, { passive: true });
+
+      instance.container.addEventListener('touchend', function (e) {
+        endX = e.changedTouches[0].clientX;
+        var diff = startX - endX;
+
+        if (Math.abs(diff) > threshold) {
+          if (diff > 0) {
+            self.next(instance);
+          } else {
+            self.prev(instance);
+          }
+        }
+      }, { passive: true });
+    },
+
+    setupPauseOnHover: function (instance) {
+      var self = this;
+
+      instance.container.addEventListener('mouseenter', function () {
+        self.stopAutoplay(instance);
+      });
+
+      instance.container.addEventListener('mouseleave', function () {
+        self.startAutoplay(instance);
+      });
+    },
+
+    goTo: function (instance, index) {
+      // Wrap around
+      if (index < 0) {
+        index = instance.slides.length - 1;
+      } else if (index >= instance.slides.length) {
+        index = 0;
+      }
+
+      // Update slides
+      instance.slides.forEach(function (slide, i) {
+        slide.classList.toggle('slideshow__slide--active', i === index);
+      });
+
+      // Update dots
+      if (instance.dots) {
+        instance.dots.forEach(function (dot, i) {
+          dot.classList.toggle('slideshow__dot--active', i === index);
+        });
+      }
+
+      instance.currentIndex = index;
+      this.updateCounter(instance);
+
+      // Reset autoplay timer
+      if (instance.isPlaying) {
+        this.startAutoplay(instance);
+      }
+    },
+
+    next: function (instance) {
+      this.goTo(instance, instance.currentIndex + 1);
+    },
+
+    prev: function (instance) {
+      this.goTo(instance, instance.currentIndex - 1);
+    },
+
+    startAutoplay: function (instance) {
+      var self = this;
+      this.stopAutoplay(instance);
+
+      instance.isPlaying = true;
+      instance.autoplayTimer = window.setInterval(function () {
+        self.next(instance);
+      }, instance.autoplayDelay);
+    },
+
+    stopAutoplay: function (instance) {
+      instance.isPlaying = false;
+      if (instance.autoplayTimer) {
+        window.clearInterval(instance.autoplayTimer);
+        instance.autoplayTimer = null;
+      }
+    },
+
+    updateCounter: function (instance) {
+      if (instance.counter) {
+        instance.counter.textContent = (instance.currentIndex + 1) + ' / ' + instance.slides.length;
+      }
+    }
+  };
+
+  /**
    * Contact Form Module
    */
   const ContactForm = {
@@ -205,7 +560,7 @@
         } else {
           throw new Error('Server error');
         }
-      } catch (_error) {
+      } catch {
         // Fallback to mailto
         this.openMailto(formData);
       } finally {

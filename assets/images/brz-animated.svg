@@ -1,0 +1,359 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" class="brz-svg">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E31E24"/>
+      <stop offset="50%" style="stop-color:#C41A1F"/>
+      <stop offset="100%" style="stop-color:#8B1419"/>
+    </linearGradient>
+    
+    <linearGradient id="windowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#0f0f1a"/>
+    </linearGradient>
+    
+    <linearGradient id="wheelGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#333"/>
+      <stop offset="100%" style="stop-color:#111"/>
+    </linearGradient>
+    
+    <linearGradient id="rimGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#666"/>
+      <stop offset="50%" style="stop-color:#444"/>
+      <stop offset="100%" style="stop-color:#222"/>
+    </linearGradient>
+    
+    <linearGradient id="headlightGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#fff"/>
+      <stop offset="100%" style="stop-color:#cceeff"/>
+    </linearGradient>
+    
+    <linearGradient id="taillightGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff3333"/>
+      <stop offset="100%" style="stop-color:#aa0000"/>
+    </linearGradient>
+    
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Wheel spoke pattern -->
+    <g id="spoke">
+      <path d="M0,-28 L3,-8 L-3,-8 Z" fill="url(#rimGradient)"/>
+    </g>
+    
+    <g id="wheel">
+      <!-- Tire -->
+      <circle cx="0" cy="0" r="42" fill="#111"/>
+      <circle cx="0" cy="0" r="38" fill="#1a1a1a"/>
+      <circle cx="0" cy="0" r="35" fill="#111" stroke="#222" stroke-width="1"/>
+      <!-- Rim -->
+      <circle cx="0" cy="0" r="28" fill="url(#rimGradient)"/>
+      <circle cx="0" cy="0" r="26" fill="#222"/>
+      <!-- Spokes (5-spoke design) -->
+      <use href="#spoke" transform="rotate(0)"/>
+      <use href="#spoke" transform="rotate(72)"/>
+      <use href="#spoke" transform="rotate(144)"/>
+      <use href="#spoke" transform="rotate(216)"/>
+      <use href="#spoke" transform="rotate(288)"/>
+      <!-- Center cap -->
+      <circle cx="0" cy="0" r="8" fill="#333"/>
+      <circle cx="0" cy="0" r="6" fill="#444"/>
+      <circle cx="0" cy="0" r="3" fill="#222"/>
+    </g>
+  </defs>
+  
+  <style>
+    .brz-svg {
+      overflow: visible;
+    }
+    
+    .car-body {
+      filter: url(#shadow);
+    }
+    
+    .wheel-group {
+      animation: wheelSpin 1s linear infinite;
+      transform-origin: center;
+    }
+    
+    .wheel-front {
+      animation: wheelSpin 1s linear infinite;
+    }
+    
+    .wheel-rear {
+      animation: wheelSpin 1s linear infinite;
+    }
+    
+    @keyframes wheelSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    .headlight-glow {
+      animation: headlightPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes headlightPulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+    
+    .taillight-glow {
+      animation: taillightPulse 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes taillightPulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    
+    .car-reflection {
+      animation: reflectionShimmer 3s ease-in-out infinite;
+    }
+    
+    @keyframes reflectionShimmer {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.25; }
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      .wheel-group, .wheel-front, .wheel-rear {
+        animation: none;
+      }
+      .headlight-glow, .taillight-glow, .car-reflection {
+        animation: none;
+        opacity: 0.8;
+      }
+    }
+  </style>
+  
+  <g class="car-body" transform="translate(100, 80)">
+    <!-- Main body shape - 2023 BRZ side profile -->
+    <path d="
+      M 50,120
+      L 30,120
+      Q 15,120 15,105
+      L 20,95
+      L 40,90
+      L 80,85
+      L 120,75
+      Q 150,65 180,55
+      L 220,45
+      Q 260,38 300,35
+      L 380,32
+      Q 420,32 450,38
+      L 500,50
+      Q 530,60 550,75
+      L 570,90
+      L 585,100
+      Q 590,110 590,120
+      L 50,120
+      Z
+    " fill="url(#bodyGradient)"/>
+    
+    <!-- Lower body / rocker panel -->
+    <path d="
+      M 50,120
+      L 50,135
+      Q 50,140 55,140
+      L 150,140
+      L 150,120
+      Z
+    " fill="#8B1419"/>
+    
+    <path d="
+      M 450,120
+      L 450,140
+      L 545,140
+      Q 550,140 550,135
+      L 550,120
+      Z
+    " fill="#8B1419"/>
+    
+    <!-- Window -->
+    <path d="
+      M 175,52
+      L 215,42
+      Q 255,35 300,33
+      L 380,32
+      Q 410,32 435,36
+      L 470,48
+      L 480,58
+      L 480,72
+      L 175,72
+      Z
+    " fill="url(#windowGradient)"/>
+    
+    <!-- Window frame / A-pillar -->
+    <path d="
+      M 170,75
+      L 175,52
+      L 185,48
+      L 180,75
+      Z
+    " fill="#333"/>
+    
+    <!-- B-pillar -->
+    <path d="
+      M 330,32
+      L 335,32
+      L 340,75
+      L 330,75
+      Z
+    " fill="#222"/>
+    
+    <!-- C-pillar -->
+    <path d="
+      M 470,48
+      L 485,55
+      L 485,75
+      L 460,75
+      Z
+    " fill="#333"/>
+    
+    <!-- Rear window -->
+    <path d="
+      M 345,33
+      L 380,32
+      Q 405,32 425,35
+      L 455,45
+      L 455,70
+      L 345,70
+      Z
+    " fill="url(#windowGradient)" opacity="0.9"/>
+    
+    <!-- Door line -->
+    <line x1="200" y1="75" x2="200" y2="118" stroke="#6B1012" stroke-width="1"/>
+    <line x1="330" y1="75" x2="325" y2="118" stroke="#6B1012" stroke-width="1"/>
+    
+    <!-- Body lines -->
+    <path d="M 80,95 Q 200,88 400,85 Q 500,85 570,95" stroke="#6B1012" stroke-width="1" fill="none"/>
+    
+    <!-- Hood bulge -->
+    <path d="M 100,82 Q 130,78 160,80" stroke="#D41B20" stroke-width="2" fill="none" opacity="0.5"/>
+    
+    <!-- Reflection highlight -->
+    <path class="car-reflection" d="
+      M 60,100
+      Q 150,85 300,80
+      Q 450,78 560,95
+      L 560,100
+      Q 450,85 300,87
+      Q 150,92 60,105
+      Z
+    " fill="#fff" opacity="0.2"/>
+    
+    <!-- Front fender vent -->
+    <path d="M 130,95 L 145,92 L 145,100 L 130,103 Z" fill="#111"/>
+    
+    <!-- Side skirt detail -->
+    <path d="M 160,135 L 440,135 L 440,138 L 160,138 Z" fill="#111"/>
+    
+    <!-- Door handle -->
+    <rect x="250" y="88" width="25" height="6" rx="2" fill="#8B1419"/>
+    
+    <!-- Mirror -->
+    <path d="M 185,60 Q 175,55 172,60 L 172,72 Q 175,77 185,75 Z" fill="#333"/>
+    
+    <!-- Headlight -->
+    <path d="
+      M 40,95
+      L 25,100
+      Q 20,102 22,108
+      L 35,115
+      L 70,115
+      L 80,100
+      L 70,92
+      Z
+    " fill="#1a1a2e"/>
+    
+    <!-- Headlight inner -->
+    <ellipse cx="50" cy="105" rx="15" ry="8" fill="url(#headlightGradient)" class="headlight-glow"/>
+    
+    <!-- Headlight LED strip -->
+    <path d="M 35,98 Q 50,95 65,98" stroke="#00d4ff" stroke-width="2" fill="none" filter="url(#glow)" class="headlight-glow"/>
+    
+    <!-- Front grille -->
+    <path d="
+      M 25,108
+      L 15,115
+      L 15,118
+      L 70,118
+      L 70,115
+      L 35,115
+      Z
+    " fill="#111"/>
+    
+    <!-- Grille mesh -->
+    <path d="M 20,114 L 65,114" stroke="#222" stroke-width="1"/>
+    <path d="M 22,116 L 68,116" stroke="#222" stroke-width="1"/>
+    
+    <!-- Taillight -->
+    <path d="
+      M 575,95
+      L 585,100
+      Q 590,105 588,115
+      L 575,118
+      L 560,118
+      L 555,105
+      Z
+    " fill="#220000"/>
+    
+    <!-- Taillight inner glow -->
+    <path d="
+      M 570,100
+      L 580,103
+      Q 583,108 582,113
+      L 572,115
+      L 563,115
+      L 560,107
+      Z
+    " fill="url(#taillightGradient)" class="taillight-glow"/>
+    
+    <!-- Rear bumper -->
+    <path d="
+      M 555,118
+      L 590,118
+      Q 592,120 590,125
+      L 555,125
+      Z
+    " fill="#8B1419"/>
+    
+    <!-- Exhaust tips -->
+    <ellipse cx="565" cy="138" rx="8" ry="4" fill="#333"/>
+    <ellipse cx="565" cy="138" rx="6" ry="3" fill="#111"/>
+    <ellipse cx="585" cy="138" rx="8" ry="4" fill="#333"/>
+    <ellipse cx="585" cy="138" rx="6" ry="3" fill="#111"/>
+    
+    <!-- Rear diffuser -->
+    <path d="M 550,135 L 590,135 L 592,140 L 548,140 Z" fill="#111"/>
+    
+    <!-- Fuel cap -->
+    <circle cx="500" cy="85" r="8" fill="#C41A1F" stroke="#8B1419" stroke-width="1"/>
+  </g>
+  
+  <!-- Wheels - positioned separately for animation -->
+  <g transform="translate(230, 220)">
+    <g class="wheel-front">
+      <use href="#wheel"/>
+    </g>
+  </g>
+  
+  <g transform="translate(555, 220)">
+    <g class="wheel-rear">
+      <use href="#wheel"/>
+    </g>
+  </g>
+  
+  <!-- Ground shadow -->
+  <ellipse cx="400" cy="265" rx="280" ry="15" fill="#000" opacity="0.3"/>
+</svg>
