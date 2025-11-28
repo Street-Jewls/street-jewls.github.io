@@ -253,13 +253,13 @@
     },
 
     setupObserver: function () {
-      var self = this;
+      const self = this;
 
-      var observer = new IntersectionObserver(function (entries) {
+      const observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
-            var element = entry.target;
-            var delay = parseInt(element.dataset.delay, 10) || 0;
+            const element = entry.target;
+            const delay = parseInt(element.dataset.delay, 10) || 0;
 
             setTimeout(function () {
               self.revealElement(element);
@@ -495,7 +495,7 @@
       this.stopAutoplay(instance);
 
       instance.isPlaying = true;
-      instance.autoplayTimer = setInterval(function () {
+      instance.autoplayTimer = window.setInterval(function () {
         self.next(instance);
       }, instance.autoplayDelay);
     },
@@ -503,7 +503,7 @@
     stopAutoplay: function (instance) {
       instance.isPlaying = false;
       if (instance.autoplayTimer) {
-        clearInterval(instance.autoplayTimer);
+        window.clearInterval(instance.autoplayTimer);
         instance.autoplayTimer = null;
       }
     },
@@ -560,7 +560,7 @@
         } else {
           throw new Error('Server error');
         }
-      } catch (_error) {
+      } catch {
         // Fallback to mailto
         this.openMailto(formData);
       } finally {
