@@ -1180,9 +1180,20 @@ h6 { font-size: var(--text-lg); }
   animation: road-scroll 1.5s linear infinite;
 }
 
-.road-line:nth-child(1) { left: 10%; animation-delay: 0s; }
-.road-line:nth-child(2) { left: 40%; animation-delay: 0.5s; }
-.road-line:nth-child(3) { left: 70%; animation-delay: 1s; }
+.road-line:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.road-line:nth-child(2) {
+  left: 40%;
+  animation-delay: 0.5s;
+}
+
+.road-line:nth-child(3) {
+  left: 70%;
+  animation-delay: 1s;
+}
 
 @keyframes road-scroll {
   0% {
@@ -1375,13 +1386,13 @@ h6 { font-size: var(--text-lg); }
 }
 
 /* --------------------------------------------------------------------------
-   Gallery Section
+   About Gallery Section
    -------------------------------------------------------------------------- */
-.gallery-section {
+.about-gallery {
   overflow: hidden;
 }
 
-.gallery-grid {
+.about-gallery__grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -1390,29 +1401,29 @@ h6 { font-size: var(--text-lg); }
   margin: 0 auto;
 }
 
-.gallery-item {
+.about-gallery__item {
   position: relative;
   overflow: hidden;
   border-radius: 4px;
   margin: 0;
 }
 
-.gallery-item--large {
+.about-gallery__item--large {
   grid-row: span 2;
 }
 
-.gallery-item img {
+.about-gallery__item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s var(--ease-out);
 }
 
-.gallery-item:hover img {
+.about-gallery__item:hover img {
   transform: scale(1.05);
 }
 
-.gallery-item figcaption {
+.about-gallery__item figcaption {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -1423,11 +1434,11 @@ h6 { font-size: var(--text-lg); }
   transition: transform 0.4s var(--ease-out);
 }
 
-.gallery-item:hover figcaption {
+.about-gallery__item:hover figcaption {
   transform: translateY(0);
 }
 
-.gallery-item__title {
+.about-gallery__title {
   display: block;
   font-family: var(--font-heading);
   font-size: var(--text-lg);
@@ -1436,7 +1447,7 @@ h6 { font-size: var(--text-lg); }
   text-transform: uppercase;
 }
 
-.gallery-item__jp {
+.about-gallery__jp {
   display: block;
   font-family: var(--font-japanese);
   font-size: var(--text-sm);
@@ -1445,19 +1456,19 @@ h6 { font-size: var(--text-lg); }
 }
 
 @media (max-width: 768px) {
-  .gallery-grid {
+  .about-gallery__grid {
     grid-template-columns: 1fr;
   }
   
-  .gallery-item--large {
+  .about-gallery__item--large {
     grid-row: auto;
   }
   
-  .gallery-item img {
+  .about-gallery__item img {
     height: 250px;
   }
   
-  .gallery-item figcaption {
+  .about-gallery__item figcaption {
     transform: translateY(0);
   }
 }
