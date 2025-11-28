@@ -22,7 +22,7 @@ env:
 
 jobs:
   # =============================================================================
-  # Lint, Build, Test
+  # Lint, Optimize, Build, Test
   # =============================================================================
   ci:
     name: CI
@@ -49,6 +49,10 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Optimize images
+        run: npm run optimize
+        continue-on-error: true
 
       - name: Build
         run: npm run build

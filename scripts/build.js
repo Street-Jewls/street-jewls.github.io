@@ -39,6 +39,9 @@ function fixPaths(content, depth = 0) {
     result = result
       .replace(/href="\/assets\//g, 'href="./assets/')
       .replace(/src="\/assets\//g, 'src="./assets/')
+      .replace(/srcset="\/assets\//g, 'srcset="./assets/')
+      .replace(/data-hd="\/assets\//g, 'data-hd="./assets/')
+      .replace(/data-hd-webp="\/assets\//g, 'data-hd-webp="./assets/')
       .replace(/href="\/pages\/parts\//g, 'href="./pages/parts/')
       .replace(/href="\/pages\//g, 'href="./pages/')
       .replace(/href="\/"/g, 'href="./"');
@@ -47,6 +50,9 @@ function fixPaths(content, depth = 0) {
     result = result
       .replace(/href="\/assets\//g, 'href="../assets/')
       .replace(/src="\/assets\//g, 'src="../assets/')
+      .replace(/srcset="\/assets\//g, 'srcset="../assets/')
+      .replace(/data-hd="\/assets\//g, 'data-hd="../assets/')
+      .replace(/data-hd-webp="\/assets\//g, 'data-hd-webp="../assets/')
       .replace(/href="\/pages\/parts\//g, 'href="./parts/')
       .replace(/href="\/pages\//g, 'href="./')
       .replace(/href="\/"/g, 'href="../index.html"');
@@ -55,6 +61,9 @@ function fixPaths(content, depth = 0) {
     result = result
       .replace(/href="\/assets\//g, 'href="../../assets/')
       .replace(/src="\/assets\//g, 'src="../../assets/')
+      .replace(/srcset="\/assets\//g, 'srcset="../../assets/')
+      .replace(/data-hd="\/assets\//g, 'data-hd="../../assets/')
+      .replace(/data-hd-webp="\/assets\//g, 'data-hd-webp="../../assets/')
       .replace(/href="\/pages\/parts\//g, 'href="./')
       .replace(/href="\/pages\//g, 'href="../')
       .replace(/href="\/"/g, 'href="../../index.html"');
@@ -75,8 +84,16 @@ function getSlideshowImages(slideshowName) {
   }
   
   const files = readdirSync(slideshowDir);
+  
+  // Get primary images (JPG/PNG) - exclude HD, WebP, and placeholder versions
   const images = files
-    .filter(file => IMAGE_EXTENSIONS.includes(extname(file).toLowerCase()))
+    .filter(file => {
+      const ext = extname(file).toLowerCase();
+      const isImage = ['.jpg', '.jpeg', '.png'].includes(ext);
+      const isHD = file.includes('-hd.');
+      const isPlaceholder = file.includes('-placeholder');
+      return isImage && !isHD && !isPlaceholder;
+    })
     .sort((a, b) => {
       // Natural sort - handles 1, 2, 10 correctly
       const numA = parseInt(a.match(/\d+/) || [0]);
@@ -85,7 +102,21 @@ function getSlideshowImages(slideshowName) {
       return a.localeCompare(b);
     });
   
-  return images;
+  // Create sets for checking versions
+  const webpSet = new Set(files.filter(f => f.endsWith('.webp') && !f.includes('-hd') && !f.includes('-placeholder')));
+  const hdJpgSet = new Set(files.filter(f => f.includes('-hd.jpg')));
+  const hdWebpSet = new Set(files.filter(f => f.includes('-hd.webp')));
+  
+  return images.map(image => {
+    const baseName = image.replace(/\.[^.]+$/, '');
+    return { 
+      name: image, 
+      baseName, 
+      hasWebP: webpSet.has(baseName + '.webp'),
+      hasHD: hdJpgSet.has(baseName + '-hd.jpg'),
+      hasHDWebP: hdWebpSet.has(baseName + '-hd.webp')
+    };
+  });
 }
 
 function generateSlideshowHTML(slideshowName, images) {
@@ -104,17 +135,46 @@ function generateSlideshowHTML(slideshowName, images) {
   const slides = images.map((image, index) => {
     const isFirst = index === 0;
     // URL encode the filename to handle spaces, brackets, parentheses
-    const encodedImage = encodeURIComponent(image);
+    const encodedImage = encodeURIComponent(image.name);
+    const encodedWebP = encodeURIComponent(image.baseName + '.webp');
+    const encodedHD = encodeURIComponent(image.baseName + '-hd.jpg');
+    const encodedHDWebP = encodeURIComponent(image.baseName + '-hd.webp');
+    
     // Create a clean alt text from the filename
-    const altText = image
+    const altText = image.name
       .replace(/\.[^.]+$/, '') // Remove extension
       .replace(/[\[\]()-]/g, '') // Remove brackets, parens, hyphens
       .replace(/\d+$/, '') // Remove trailing numbers
       .trim();
     
+    const loading = isFirst ? 'eager' : 'lazy';
+    const activeClass = isFirst ? ' slideshow__slide--active' : '';
+    const srcPath = `/assets/images/slideshows/${slideshowName}`;
+    
+    // Build HD data attributes if available
+    let hdAttrs = '';
+    if (image.hasHD) {
+      hdAttrs = ` data-hd="${srcPath}/${encodedHD}"`;
+      if (image.hasHDWebP) {
+        hdAttrs += ` data-hd-webp="${srcPath}/${encodedHDWebP}"`;
+      }
+    }
+    
+    // Use <picture> element if WebP is available
+    if (image.hasWebP) {
+      return `
+            <div class="slideshow__slide${activeClass}"${hdAttrs}>
+              <picture>
+                <source srcset="${srcPath}/${encodedWebP}" type="image/webp">
+                <img src="${srcPath}/${encodedImage}" alt="${altText || 'Slide ' + (index + 1)}" loading="${loading}">
+              </picture>
+            </div>`;
+    }
+    
+    // Fallback to regular img
     return `
-            <div class="slideshow__slide${isFirst ? ' slideshow__slide--active' : ''}">
-              <img src="/assets/images/slideshows/${slideshowName}/${encodedImage}" alt="${altText || 'Slide ' + (index + 1)}" loading="${isFirst ? 'eager' : 'lazy'}">
+            <div class="slideshow__slide${activeClass}"${hdAttrs}>
+              <img src="${srcPath}/${encodedImage}" alt="${altText || 'Slide ' + (index + 1)}" loading="${loading}">
             </div>`;
   }).join('');
   
