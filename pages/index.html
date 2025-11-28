@@ -139,47 +139,73 @@
     </section>
 
     <!-- Roman Rollers Slideshow -->
-    <section class="section bg-black slideshow-section">
-      <div class="container">
-        <header class="section-header" data-animate="fade-in-up">
-          <p class="section-header__eyebrow">Featured Build</p>
-          <h2 class="section-header__title">Roman Rollers</h2>
-        </header>
+    <section class="section section--flush bg-black slideshow-section">
+      <div class="slideshow slideshow--immersive" data-slideshow="roman-rollers" data-auto="5000">
+        <div class="slideshow__track">
+          {{SLIDESHOW:roman-rollers}}
+        </div>
         
-        <div class="slideshow" data-slideshow="roman-rollers" data-animate="fade-in-up" data-delay="100">
-          <div class="slideshow__track">
-            {{SLIDESHOW:roman-rollers}}
+        <!-- Overlay with title -->
+        <div class="slideshow__overlay">
+          <div class="slideshow__header">
+            <p class="slideshow__eyebrow">Featured Build</p>
+            <h2 class="slideshow__title">Roman Rollers</h2>
           </div>
-          <button class="slideshow__btn slideshow__btn--prev" aria-label="Previous slide">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+        
+        <!-- Controls -->
+        <button class="slideshow__btn slideshow__btn--prev" aria-label="Previous slide">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="slideshow__btn slideshow__btn--next" aria-label="Next slide">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        
+        <!-- Bottom bar -->
+        <div class="slideshow__bottom">
+          <div class="slideshow__counter"></div>
+          <div class="slideshow__progress"><div class="slideshow__progress-bar"></div></div>
+          <button class="slideshow__fullscreen" aria-label="Toggle fullscreen">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
           </button>
-          <button class="slideshow__btn slideshow__btn--next" aria-label="Next slide">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-          </button>
-          <div class="slideshow__dots"></div>
         </div>
       </div>
     </section>
 
     <!-- Coca Cola Slideshow -->
-    <section class="section bg-carbon slideshow-section">
-      <div class="container">
-        <header class="section-header" data-animate="fade-in-up">
-          <p class="section-header__eyebrow">Featured Build</p>
-          <h2 class="section-header__title">Coca Cola</h2>
-        </header>
+    <section class="section section--flush bg-carbon slideshow-section">
+      <div class="slideshow slideshow--immersive" data-slideshow="coca-cola" data-auto="5000">
+        <div class="slideshow__track">
+          {{SLIDESHOW:coca-cola}}
+        </div>
         
-        <div class="slideshow" data-slideshow="coca-cola" data-animate="fade-in-up" data-delay="100">
-          <div class="slideshow__track">
-            {{SLIDESHOW:coca-cola}}
+        <!-- Overlay with title -->
+        <div class="slideshow__overlay">
+          <div class="slideshow__header">
+            <p class="slideshow__eyebrow">Featured Build</p>
+            <h2 class="slideshow__title">Coca Cola</h2>
           </div>
-          <button class="slideshow__btn slideshow__btn--prev" aria-label="Previous slide">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+        
+        <!-- Controls -->
+        <button class="slideshow__btn slideshow__btn--prev" aria-label="Previous slide">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="slideshow__btn slideshow__btn--next" aria-label="Next slide">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        
+        <!-- Bottom bar -->
+        <div class="slideshow__bottom">
+          <div class="slideshow__counter"></div>
+          <div class="slideshow__progress"><div class="slideshow__progress-bar"></div></div>
+          <button class="slideshow__fullscreen" aria-label="Toggle fullscreen">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
           </button>
-          <button class="slideshow__btn slideshow__btn--next" aria-label="Next slide">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-          </button>
-          <div class="slideshow__dots"></div>
         </div>
       </div>
     </section>

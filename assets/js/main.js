@@ -312,45 +312,63 @@
   };
 
   /**
-   * Slideshow Module
-   * Auto-playing image carousel with touch support
+   * Slideshow Module - Immersive
+   * Full-featured carousel with progress, fullscreen, touch/keyboard support
    */
   const Slideshow = {
     instances: [],
 
     init: function () {
-      var self = this;
-      var slideshows = document.querySelectorAll('[data-slideshow]');
+      const self = this;
+      const slideshows = document.querySelectorAll('[data-slideshow]');
 
       slideshows.forEach(function (el) {
-        var instance = self.createInstance(el);
+        const instance = self.createInstance(el);
         if (instance) {
           self.instances.push(instance);
+        }
+      });
+
+      // Global keyboard listener for fullscreen exit
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          self.instances.forEach(function (inst) {
+            if (inst.isFullscreen) {
+              self.toggleFullscreen(inst);
+            }
+          });
         }
       });
     },
 
     createInstance: function (container) {
-      var slides = container.querySelectorAll('.slideshow__slide:not(.slideshow__slide--placeholder)');
+      const slides = container.querySelectorAll('.slideshow__slide:not(.slideshow__slide--placeholder)');
 
-      // Skip if no real slides
+      // Skip if no real slides (show placeholder)
       if (slides.length === 0) {
         return null;
       }
 
-      var instance = {
+      const autoDelay = parseInt(container.dataset.auto, 10) || 5000;
+
+      const instance = {
         container: container,
         slides: slides,
         currentIndex: 0,
         autoplayTimer: null,
-        autoplayDelay: 5000,
-        isPlaying: true
+        progressTimer: null,
+        autoplayDelay: autoDelay,
+        isPlaying: true,
+        isFullscreen: false,
+        progressStart: 0
       };
 
       this.setupControls(instance);
-      this.setupDots(instance);
       this.setupCounter(instance);
+      this.setupProgress(instance);
+      this.setupFullscreen(instance);
       this.setupTouch(instance);
+      this.setupKeyboard(instance);
       this.startAutoplay(instance);
       this.setupPauseOnHover(instance);
 
@@ -358,81 +376,113 @@
     },
 
     setupControls: function (instance) {
-      var self = this;
-      var prevBtn = instance.container.querySelector('.slideshow__btn--prev');
-      var nextBtn = instance.container.querySelector('.slideshow__btn--next');
+      const self = this;
+      const prevBtn = instance.container.querySelector('.slideshow__btn--prev');
+      const nextBtn = instance.container.querySelector('.slideshow__btn--next');
 
       if (prevBtn) {
-        prevBtn.addEventListener('click', function () {
+        prevBtn.addEventListener('click', function (e) {
+          e.preventDefault();
           self.prev(instance);
         });
       }
 
       if (nextBtn) {
-        nextBtn.addEventListener('click', function () {
+        nextBtn.addEventListener('click', function (e) {
+          e.preventDefault();
           self.next(instance);
         });
       }
+    },
 
-      // Keyboard navigation
+    setupKeyboard: function (instance) {
+      const self = this;
       instance.container.setAttribute('tabindex', '0');
+
       instance.container.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowLeft') {
-          self.prev(instance);
-        } else if (e.key === 'ArrowRight') {
-          self.next(instance);
+        switch (e.key) {
+          case 'ArrowLeft':
+            e.preventDefault();
+            self.prev(instance);
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            self.next(instance);
+            break;
+          case ' ':
+            e.preventDefault();
+            if (instance.isPlaying) {
+              self.stopAutoplay(instance);
+            } else {
+              self.startAutoplay(instance);
+            }
+            break;
+          case 'f':
+          case 'F':
+            self.toggleFullscreen(instance);
+            break;
         }
       });
     },
 
-    setupDots: function (instance) {
-      var self = this;
-      var dotsContainer = instance.container.querySelector('.slideshow__dots');
-
-      if (!dotsContainer || instance.slides.length <= 1) {
-        return;
-      }
-
-      // Create dots
-      for (var i = 0; i < instance.slides.length; i++) {
-        (function (index) {
-          var dot = document.createElement('button');
-          dot.className = 'slideshow__dot' + (index === 0 ? ' slideshow__dot--active' : '');
-          dot.setAttribute('aria-label', 'Go to slide ' + (index + 1));
-          dot.addEventListener('click', function () {
-            self.goTo(instance, index);
-          });
-          dotsContainer.appendChild(dot);
-        })(i);
-      }
-
-      instance.dots = dotsContainer.querySelectorAll('.slideshow__dot');
-    },
-
     setupCounter: function (instance) {
-      var counter = instance.container.querySelector('.slideshow__counter');
+      const counter = instance.container.querySelector('.slideshow__counter');
       if (counter && instance.slides.length > 1) {
         instance.counter = counter;
         this.updateCounter(instance);
       }
     },
 
+    setupProgress: function (instance) {
+      const progressBar = instance.container.querySelector('.slideshow__progress-bar');
+      if (progressBar) {
+        instance.progressBar = progressBar;
+      }
+    },
+
+    setupFullscreen: function (instance) {
+      const self = this;
+      const btn = instance.container.querySelector('.slideshow__fullscreen');
+
+      if (btn) {
+        btn.addEventListener('click', function () {
+          self.toggleFullscreen(instance);
+        });
+      }
+    },
+
+    toggleFullscreen: function (instance) {
+      instance.isFullscreen = !instance.isFullscreen;
+      instance.container.classList.toggle('is-fullscreen', instance.isFullscreen);
+
+      if (instance.isFullscreen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    },
+
     setupTouch: function (instance) {
-      var self = this;
-      var startX = 0;
-      var endX = 0;
-      var threshold = 50;
+      const self = this;
+      let startX = 0;
+      let startY = 0;
+      let endX = 0;
+      const threshold = 50;
 
       instance.container.addEventListener('touchstart', function (e) {
         startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
       }, { passive: true });
 
       instance.container.addEventListener('touchend', function (e) {
         endX = e.changedTouches[0].clientX;
-        var diff = startX - endX;
+        const endY = e.changedTouches[0].clientY;
+        const diffX = startX - endX;
+        const diffY = Math.abs(startY - endY);
 
-        if (Math.abs(diff) > threshold) {
-          if (diff > 0) {
+        // Only trigger if horizontal swipe is greater than vertical
+        if (Math.abs(diffX) > threshold && Math.abs(diffX) > diffY) {
+          if (diffX > 0) {
             self.next(instance);
           } else {
             self.prev(instance);
@@ -442,14 +492,14 @@
     },
 
     setupPauseOnHover: function (instance) {
-      var self = this;
+      const self = this;
 
       instance.container.addEventListener('mouseenter', function () {
-        self.stopAutoplay(instance);
+        self.pauseProgress(instance);
       });
 
       instance.container.addEventListener('mouseleave', function () {
-        self.startAutoplay(instance);
+        self.resumeProgress(instance);
       });
     },
 
@@ -466,17 +516,11 @@
         slide.classList.toggle('slideshow__slide--active', i === index);
       });
 
-      // Update dots
-      if (instance.dots) {
-        instance.dots.forEach(function (dot, i) {
-          dot.classList.toggle('slideshow__dot--active', i === index);
-        });
-      }
-
       instance.currentIndex = index;
       this.updateCounter(instance);
+      this.resetProgress(instance);
 
-      // Reset autoplay timer
+      // Restart autoplay
       if (instance.isPlaying) {
         this.startAutoplay(instance);
       }
@@ -491,11 +535,17 @@
     },
 
     startAutoplay: function (instance) {
-      var self = this;
+      const self = this;
       this.stopAutoplay(instance);
 
       instance.isPlaying = true;
-      instance.autoplayTimer = window.setInterval(function () {
+      instance.progressStart = Date.now();
+
+      // Progress animation
+      this.animateProgress(instance);
+
+      // Auto advance
+      instance.autoplayTimer = window.setTimeout(function () {
         self.next(instance);
       }, instance.autoplayDelay);
     },
@@ -503,8 +553,64 @@
     stopAutoplay: function (instance) {
       instance.isPlaying = false;
       if (instance.autoplayTimer) {
-        window.clearInterval(instance.autoplayTimer);
+        window.clearTimeout(instance.autoplayTimer);
         instance.autoplayTimer = null;
+      }
+      if (instance.progressTimer) {
+        window.cancelAnimationFrame(instance.progressTimer);
+        instance.progressTimer = null;
+      }
+    },
+
+    pauseProgress: function (instance) {
+      if (instance.autoplayTimer) {
+        window.clearTimeout(instance.autoplayTimer);
+        instance.autoplayTimer = null;
+      }
+      if (instance.progressTimer) {
+        window.cancelAnimationFrame(instance.progressTimer);
+        instance.progressTimer = null;
+      }
+      // Store remaining time
+      instance.remainingTime = instance.autoplayDelay - (Date.now() - instance.progressStart);
+    },
+
+    resumeProgress: function (instance) {
+      const self = this;
+      if (!instance.isPlaying || !instance.remainingTime) {
+        return;
+      }
+
+      instance.progressStart = Date.now() - (instance.autoplayDelay - instance.remainingTime);
+      this.animateProgress(instance);
+
+      instance.autoplayTimer = window.setTimeout(function () {
+        self.next(instance);
+      }, instance.remainingTime);
+    },
+
+    animateProgress: function (instance) {
+      const self = this;
+      if (!instance.progressBar) {
+        return;
+      }
+
+      function update() {
+        const elapsed = Date.now() - instance.progressStart;
+        const progress = Math.min((elapsed / instance.autoplayDelay) * 100, 100);
+        instance.progressBar.style.width = progress + '%';
+
+        if (progress < 100 && instance.isPlaying) {
+          instance.progressTimer = window.requestAnimationFrame(update);
+        }
+      }
+
+      update();
+    },
+
+    resetProgress: function (instance) {
+      if (instance.progressBar) {
+        instance.progressBar.style.width = '0%';
       }
     },
 
