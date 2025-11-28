@@ -360,6 +360,8 @@
         autoplayDelay: autoDelay,
         isPlaying: true,
         isFullscreen: false,
+        isHD: false,
+        hdLoadedSlides: new Set(),
         progressStart: 0
       };
 
@@ -367,6 +369,7 @@
       this.setupCounter(instance);
       this.setupProgress(instance);
       this.setupFullscreen(instance);
+      this.setupHD(instance);
       this.setupTouch(instance);
       this.setupKeyboard(instance);
       this.startAutoplay(instance);
@@ -421,6 +424,10 @@
           case 'F':
             self.toggleFullscreen(instance);
             break;
+          case 'h':
+          case 'H':
+            self.toggleHD(instance);
+            break;
         }
       });
     },
@@ -459,6 +466,104 @@
         document.body.style.overflow = 'hidden';
       } else {
         document.body.style.overflow = '';
+      }
+    },
+
+    setupHD: function (instance) {
+      const self = this;
+      const btn = instance.container.querySelector('.slideshow__hd');
+
+      if (!btn) {
+        return;
+      }
+
+      instance.hdButton = btn;
+
+      // Check if any slides have HD versions
+      let hasAnyHD = false;
+      instance.slides.forEach(function (slide) {
+        if (slide.dataset.hd) {
+          hasAnyHD = true;
+        }
+      });
+
+      // Update button state based on HD availability
+      if (!hasAnyHD) {
+        btn.classList.add('is-disabled');
+        btn.title = 'HD not available - run npm run optimize';
+      }
+
+      btn.addEventListener('click', function () {
+        if (!hasAnyHD) {
+          return; // Don't toggle if no HD available
+        }
+        self.toggleHD(instance);
+      });
+    },
+
+    toggleHD: function (instance) {
+      const self = this;
+      instance.isHD = !instance.isHD;
+
+      if (instance.hdButton) {
+        instance.hdButton.classList.toggle('is-active', instance.isHD);
+      }
+
+      if (instance.isHD) {
+        // Load HD for current slide
+        self.loadHDForSlide(instance, instance.currentIndex);
+      }
+    },
+
+    loadHDForSlide: function (instance, index) {
+      const slide = instance.slides[index];
+      if (!slide) return;
+
+      const hdPath = slide.dataset.hd;
+      const hdWebpPath = slide.dataset.hdWebp;
+
+      if (!hdPath) return;
+
+      // Already loaded
+      if (instance.hdLoadedSlides.has(index)) return;
+
+      // Show loading state
+      if (instance.hdButton) {
+        instance.hdButton.classList.add('is-loading');
+      }
+
+      const img = slide.querySelector('img');
+      const picture = slide.querySelector('picture');
+
+      if (picture && hdWebpPath) {
+        // Update picture element sources
+        const source = picture.querySelector('source[type="image/webp"]');
+        if (source) {
+          source.srcset = hdWebpPath;
+        }
+        if (img) {
+          img.src = hdPath;
+        }
+      } else if (img) {
+        // Update regular img
+        img.src = hdPath;
+      }
+
+      // Track as loaded
+      instance.hdLoadedSlides.add(index);
+
+      // Remove loading state after image loads
+      if (img) {
+        img.onload = function () {
+          if (instance.hdButton) {
+            instance.hdButton.classList.remove('is-loading');
+          }
+        };
+        img.onerror = function () {
+          if (instance.hdButton) {
+            instance.hdButton.classList.remove('is-loading');
+          }
+        };
       }
     },
 
@@ -519,6 +624,11 @@
       instance.currentIndex = index;
       this.updateCounter(instance);
       this.resetProgress(instance);
+
+      // Load HD for new slide if HD mode is active
+      if (instance.isHD) {
+        this.loadHDForSlide(instance, index);
+      }
 
       // Restart autoplay
       if (instance.isPlaying) {
